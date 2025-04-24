@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Counters</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 10px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 6px 12px;
+        }
+
+        span {
+            font-weight: bold;
+        }
+
+        .counterContainer {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 24px;
+            margin: 12px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            max-width: 320px;
+        }
+
+        .timer,
+        .counter {
+            width: 100%;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 6px 12px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            box-sizing: border-box
+        }
+    </style>
+
+</head>
+
+<body>
+    <button id="add-btn">Add Counter</button>
+
+    <div id="counters"></div>
+
+    <script>
+        document.getElementById("add-btn").addEventListener("click", addCounter);
+
+
+        function addCounter() {
+            //Counter
+            let number = 0;
+            //Timer
+            let seconds = 0;
+            let interval;
+            let running = false;
+
+            const mainContainer = document.createElement("div");
+            mainContainer.className = "counterContainer";
+
+            //Counter title
+            const divLabel = document.createElement("span");
+            divLabel.textContent = "Counter";
+            divLabel.addEventListener("click", () => {
+                const newText = prompt("Enter new text:");
+                if (newText) {
+                    divLabel.innerText = newText;
+                }
+            })
+
+            mainContainer.appendChild(divLabel);
+
+            //Counter text and buttons
+            const counterDiv = document.createElement("div");
+            counterDiv.className = "counter";
+            
+            const display = document.createElement("span");
+            display.textContent = `Counter: ${number}`;
+            counterDiv.appendChild(display);
+
+            const plusButton = document.createElement("button");
+            plusButton.textContent = "+1";
+            plusButton.addEventListener("click", () => {
+                number++;
+                display.textContent = `Counter: ${number}`;
+            });
+            counterDiv.appendChild(plusButton);
+
+            const minusButton = document.createElement("button");
+            minusButton.textContent = "-1";
+            minusButton.addEventListener("click", () => {
+                number--;
+                display.textContent = `Counter: ${number}`;
+            });
+            counterDiv.appendChild(minusButton);
+
+            const resetButton = document.createElement("button");
+            resetButton.textContent = "Reset";
+            resetButton.addEventListener("click", () => {
+                number = 0;
+                display.textContent = `Counter: ${number}`;
+            });
+            counterDiv.appendChild(resetButton);
+
+            //Timer text and buttons
+            const timerDiv = document.createElement("div");
+            timerDiv.className = "timer";
+
+            const timerText = document.createElement("span");
+            timerText.textContent = 'Timer: 0:00';
+            timerDiv.appendChild(timerText);
+
+            const startStopTimer = document.createElement("button");
+            startStopTimer.textContent = "Start";
+            startStopTimer.addEventListener("click", () => {
+                if (running) {
+                    clearInterval(interval);
+                    startStopTimer.innerText = "Start";
+                } else {
+                    interval = setInterval(updateTimer, 1000);
+                    startStopTimer.innerText = "Stop";
+                }
+                running = !running;
+            })
+            timerDiv.appendChild(startStopTimer);
+
+            const resetTimer = document.createElement("button");
+            resetTimer.textContent = "Reset";
+            resetTimer.addEventListener("click", () => {
+                clearInterval(interval);
+                startStopTimer.innerText = "Start";
+                running = false;
+
+                seconds = 0;
+                const mins = String(Math.floor(seconds / 60));
+                const secs = String(seconds % 60).padStart(2, '0');
+                timerText.innerText = `Timer: ${mins}:${secs}`;
+            })
+            timerDiv.appendChild(resetTimer);
+
+            function updateTimer() {
+                seconds++;
+                const mins = String(Math.floor(seconds / 60));
+                const secs = String(seconds % 60).padStart(2, '0');
+                timerText.innerText = `Timer: ${mins}:${secs}`;
+            } 
+
+            //Add continers to main div
+            mainContainer.appendChild(counterDiv);
+            mainContainer.appendChild(timerDiv);
+
+            document.getElementById("counters").appendChild(mainContainer);
+        }
+    </script>
+</body>
+</html>
